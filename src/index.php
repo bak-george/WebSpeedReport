@@ -23,7 +23,7 @@ class Task
 
 $tasks = new Tasks([
     new Task('Got to the store'),
-    new Task('take a shit'),
+    new Task('take a shower'),
     new Task('Take a walk')
 ]);
 
