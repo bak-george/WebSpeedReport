@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use Exception;
 use PDO;
 
 class Database
@@ -37,6 +38,9 @@ class Database
         return $this->statement->fetch();
     }
 
+    /**
+     * @throws Exception
+     */
     public function findOrFail()
     {
         $result = $this->find();
