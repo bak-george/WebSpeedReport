@@ -7,8 +7,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-require('vendor/autoload.php');
-require('bootstrap.php');
+require_once 'vendor/autoload.php';
+require_once 'bootstrap.php';
 
 class speedtestCommand extends Command
 {
@@ -22,10 +22,10 @@ class speedtestCommand extends Command
     {
         $db = App::resolve(Database::class);
 
-        $db->query('CREATE SCHEMA IF NOT EXISTS `speedtest_main` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
-        $db->query('USE `speedtest_main`;');
+        $createTable = $db->query('CREATE DATABASE IF NOT EXISTS web_speed_reports;');
+        var_dump($createTable);
 
-        $sql = "CREATE TABLE IF NOT EXISTS speedtest_results (
+        $sql = "CREATE TABLE IF NOT EXISTS results (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     type VARCHAR(50),
                     timestamp DATETIME,
@@ -101,7 +101,7 @@ class speedtestCommand extends Command
             return Command::FAILURE;
         }
 
-        $query = "INSERT INTO speedtest (type, timestamp, ping_jitter, ping_latency, ping_low, ping_high, 
+        $query = "INSERT INTO results (type, timestamp, ping_jitter, ping_latency, ping_low, ping_high, 
               download_bandwidth, download_bytes, download_elapsed, download_latency_iqm, 
               download_latency_low, download_latency_high, download_latency_jitter, upload_bandwidth, 
               upload_bytes, upload_elapsed, upload_latency_iqm, upload_latency_low, upload_latency_high, 
