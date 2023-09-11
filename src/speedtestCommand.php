@@ -1,5 +1,7 @@
 <?php
 
+use Core\App;
+use Core\Database;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,6 +19,12 @@ class speedtestCommand extends Command
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //creating the mysql table if it doesn't exist
+        $db = App::resolve(Database::class);
+
+
+
+        //saving the results in a folder
         $resultDir = __DIR__ . '/speedTestResults';
         if (!is_dir($resultDir)) {
             mkdir($resultDir, 0777, true);
