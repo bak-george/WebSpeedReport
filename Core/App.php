@@ -11,7 +11,7 @@ class App
         static::$container = $container;
     }
 
-    public static function getContainer()
+    public static function container()
     {
         return static::$container;
     }
