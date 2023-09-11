@@ -23,7 +23,6 @@ class speedtestCommand extends Command
         $db = App::resolve(Database::class);
 
         $createTable = $db->query('CREATE DATABASE IF NOT EXISTS web_speed_reports;');
-        var_dump($createTable);
 
         $sql = "CREATE TABLE IF NOT EXISTS results (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -76,7 +75,7 @@ class speedtestCommand extends Command
         $date = date('Y-m-d_H-i-s');
         $filePath = $resultDir . "/result_{$date}.json";
 
-        $jsonResult = shell_exec('speedtest -f json-pretty');
+        $jsonResult = shell_exec('speedtest -f json-pretty 2>&1');
 
         if ($jsonResult) {
             file_put_contents($filePath, $jsonResult);
@@ -116,7 +115,7 @@ class speedtestCommand extends Command
               :interface_isVpn, :interface_externalIp, :server_id, :server_host, :server_port, :server_name, 
               :server_location, :server_country, :server_ip, :result_id, :result_url, :result_persisted)";
 
-        $db->query($query, [
+        $insert = $db->query($query, [
             ':type' => $decodedData['type'],
             ':timestamp' => $decodedData['timestamp'],
             ':ping_jitter' => $decodedData['ping']['jitter'],
