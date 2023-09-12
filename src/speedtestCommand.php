@@ -26,7 +26,7 @@ class speedtestCommand extends Command
         $sql = "CREATE TABLE IF NOT EXISTS results (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     type VARCHAR(50),
-                    timestamp DATETIME,
+                    timestamp TIMESTAMP,
                     ping_jitter FLOAT,
                     ping_latency FLOAT,
                     ping_low FLOAT,
@@ -50,7 +50,7 @@ class speedtestCommand extends Command
                     interface_internalIp VARCHAR(255),
                     interface_name VARCHAR(50),
                     interface_macAddr VARCHAR(50),
-                    interface_isVpn BOOLEAN,
+                    interface_isVpn BOOLEAN DEFAULT FALSE,
                     interface_externalIp VARCHAR(255),
                     server_id INT,
                     server_host VARCHAR(255),
@@ -79,7 +79,6 @@ class speedtestCommand extends Command
         if ($jsonResult) {
             file_put_contents($filePath, $jsonResult);
             $output->writeln("Result saved to: $filePath");
-            return Command::SUCCESS;
         } else {
             $output->writeln("Failed to execute speedtest.");
             return Command::FAILURE;
@@ -87,7 +86,7 @@ class speedtestCommand extends Command
 
         $files = glob($resultDir . '/*.json');
 
-        usort($files, 'sort_by_created_at');
+        usort($files, [self::class, 'sort_by_created_at']);
 
         $latestFile = $files[0];
 
@@ -114,46 +113,64 @@ class speedtestCommand extends Command
               :interface_isVpn, :interface_externalIp, :server_id, :server_host, :server_port, :server_name, 
               :server_location, :server_country, :server_ip, :result_id, :result_url, :result_persisted)";
 
-        $db->query($query, [
-            ':type' => $decodedData['type'],
-            ':timestamp' => $decodedData['timestamp'],
-            ':ping_jitter' => $decodedData['ping']['jitter'],
-            ':ping_latency' => $decodedData['ping']['latency'],
-            ':ping_low' => $decodedData['ping']['low'],
-            ':ping_high' => $decodedData['ping']['high'],
-            ':download_bandwidth' => $decodedData['download']['bandwidth'],
-            ':download_bytes' => $decodedData['download']['bytes'],
-            ':download_elapsed' => $decodedData['download']['elapsed'],
-            ':download_latency_iqm' => $decodedData['download']['latency']['iqm'],
-            ':download_latency_low' => $decodedData['download']['latency']['low'],
-            ':download_latency_high' => $decodedData['download']['latency']['high'],
-            ':download_latency_jitter' => $decodedData['download']['latency']['jitter'],
-            ':upload_bandwidth' => $decodedData['upload']['bandwidth'],
-            ':upload_bytes' => $decodedData['upload']['bytes'],
-            ':upload_elapsed' => $decodedData['upload']['elapsed'],
-            ':upload_latency_iqm' => $decodedData['upload']['latency']['iqm'],
-            ':upload_latency_low' => $decodedData['upload']['latency']['low'],
-            ':upload_latency_high' => $decodedData['upload']['latency']['high'],
-            ':upload_latency_jitter' => $decodedData['upload']['latency']['jitter'],
-            ':packetLoss' => $decodedData['packetLoss'],
-            ':isp' => $decodedData['isp'],
-            ':interface_internalIp' => $decodedData['interface']['internalIp'],
-            ':interface_name' => $decodedData['interface']['name'],
-            ':interface_macAddr' => $decodedData['interface']['macAddr'],
-            ':interface_isVpn' => $decodedData['interface']['isVpn'],
-            ':interface_externalIp' => $decodedData['interface']['externalIp'],
-            ':server_id' => $decodedData['server']['id'],
-            ':server_host' => $decodedData['server']['host'],
-            ':server_port' => $decodedData['server']['port'],
-            ':server_name' => $decodedData['server']['name'],
-            ':server_location' => $decodedData['server']['location'],
-            ':server_country' => $decodedData['server']['country'],
-            ':server_ip' => $decodedData['server']['ip'],
-            ':result_id' => $decodedData['result']['id'],
-            ':result_url' => $decodedData['result']['url'],
-            ':result_persisted' => $decodedData['result']['persisted']
+        $formattedTimestamp = date('Y-m-d H:i:s', strtotime($decodedData['timestamp']));
+
+        $insertSql = $db->query($query, [
+                        ':type' => $decodedData['type'],
+                        ':timestamp' => $formattedTimestamp,
+                        ':ping_jitter' => $decodedData['ping']['jitter'],
+                        ':ping_latency' => $decodedData['ping']['latency'],
+                        ':ping_low' => $decodedData['ping']['low'],
+                        ':ping_high' => $decodedData['ping']['high'],
+                        ':download_bandwidth' => $decodedData['download']['bandwidth'],
+                        ':download_bytes' => $decodedData['download']['bytes'],
+                        ':download_elapsed' => $decodedData['download']['elapsed'],
+                        ':download_latency_iqm' => $decodedData['download']['latency']['iqm'],
+                        ':download_latency_low' => $decodedData['download']['latency']['low'],
+                        ':download_latency_high' => $decodedData['download']['latency']['high'],
+                        ':download_latency_jitter' => $decodedData['download']['latency']['jitter'],
+                        ':upload_bandwidth' => $decodedData['upload']['bandwidth'],
+                        ':upload_bytes' => $decodedData['upload']['bytes'],
+                        ':upload_elapsed' => $decodedData['upload']['elapsed'],
+                        ':upload_latency_iqm' => $decodedData['upload']['latency']['iqm'],
+                        ':upload_latency_low' => $decodedData['upload']['latency']['low'],
+                        ':upload_latency_high' => $decodedData['upload']['latency']['high'],
+                        ':upload_latency_jitter' => $decodedData['upload']['latency']['jitter'],
+                        ':packetLoss' => $decodedData['packetLoss'],
+                        ':isp' => $decodedData['isp'],
+                        ':interface_internalIp' => $decodedData['interface']['internalIp'],
+                        ':interface_name' => $decodedData['interface']['name'],
+                        ':interface_macAddr' => $decodedData['interface']['macAddr'],
+                        ':interface_isVpn' => isset($decodedData['interface']['isVpn']) ? (int) $decodedData['interface']['isVpn'] : 0,
+                        ':interface_externalIp' => $decodedData['interface']['externalIp'],
+                        ':server_id' => $decodedData['server']['id'],
+                        ':server_host' => $decodedData['server']['host'],
+                        ':server_port' => $decodedData['server']['port'],
+                        ':server_name' => $decodedData['server']['name'],
+                        ':server_location' => $decodedData['server']['location'],
+                        ':server_country' => $decodedData['server']['country'],
+                        ':server_ip' => $decodedData['server']['ip'],
+                        ':result_id' => $decodedData['result']['id'],
+                        ':result_url' => $decodedData['result']['url'],
+                        ':result_persisted' => $decodedData['result']['persisted']
         ]);
 
-        return Command::SUCCESS;
+        if ($insertSql) {
+            $output->writeln("Result saved to database.");
+            return Command::SUCCESS;
+        } else {
+            $output->writeln("Failed to save result to database.");
+            return Command::FAILURE;
+        }
     }
+
+    public static function sort_by_created_at($a, $b)
+    {
+        if (filectime($a) === filectime($b)) {
+            return 0;
+        }
+
+        return (filectime($a) < filectime($b)) ? -1 : 1;
+    }
+
 }
