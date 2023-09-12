@@ -21,7 +21,14 @@ class speedtestCommand extends Command
     {
         $db = App::resolve(Database::class);
 
-        $createTable = $db->query('CREATE DATABASE IF NOT EXISTS web_speed_reports;');
+        $createDatabase = $db->query('CREATE DATABASE IF NOT EXISTS web_speed_reports;');
+
+        if ($createDatabase) {
+            $output->writeln("Database 'web_speed_reports' created successfully.");
+        } else {
+            $output->writeln("Failed to create database.");
+            return Command::FAILURE;
+        }
 
         $sql = "CREATE TABLE IF NOT EXISTS results (
                     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -64,7 +71,14 @@ class speedtestCommand extends Command
                     result_persisted BOOLEAN
                 );";
 
-        $db->query($sql);
+        $createTable = $db->query($sql);
+
+        if ($createTable) {
+            $output->writeln("Table 'results' created successfully.");
+        } else {
+            $output->writeln("Failed to create table.");
+            return Command::FAILURE;
+        }
 
         $resultDir = __DIR__ . '/speedTestResults';
         if (!is_dir($resultDir)) {
@@ -78,7 +92,7 @@ class speedtestCommand extends Command
 
         if ($jsonResult) {
             file_put_contents($filePath, $jsonResult);
-            $output->writeln("Result saved to: $filePath");
+            $output->writeln("Saving results saved to: $filePath");
         } else {
             $output->writeln("Failed to execute speedtest.");
             return Command::FAILURE;
@@ -93,6 +107,7 @@ class speedtestCommand extends Command
         if ($latestFile) {
             $jsonContent = file_get_contents($latestFile);
             $decodedData = json_decode($jsonContent, true);
+            $output->writeln("Decoding Data...");
         } else {
             $output->writeln("No results No JSON files found in the directory:" . $resultDir);
             return Command::FAILURE;
