@@ -2,7 +2,6 @@
 
 use Core\App;
 use Core\Database;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -115,7 +114,7 @@ class speedtestCommand extends Command
               :interface_isVpn, :interface_externalIp, :server_id, :server_host, :server_port, :server_name, 
               :server_location, :server_country, :server_ip, :result_id, :result_url, :result_persisted)";
 
-        $insert = $db->query($query, [
+        $db->query($query, [
             ':type' => $decodedData['type'],
             ':timestamp' => $decodedData['timestamp'],
             ':ping_jitter' => $decodedData['ping']['jitter'],
@@ -154,11 +153,7 @@ class speedtestCommand extends Command
             ':result_url' => $decodedData['result']['url'],
             ':result_persisted' => $decodedData['result']['persisted']
         ]);
+
+        return Command::SUCCESS;
     }
 }
-
-
-//Okla command to create a Json file in the folder
-$application = new Application();
-$application->add(new speedtestCommand());
-$application->run();

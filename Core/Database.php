@@ -46,7 +46,7 @@ class Database
         $result = $this->find();
 
         if (!$result) {
-            throw new Exception('No results found.');
+            throw new Exception('Query failed to return a result.');
         }
 
         return $result;
