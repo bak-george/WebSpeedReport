@@ -7,12 +7,35 @@
     <title>WebSpeedReport</title>
 </head>
 <body>
-    <header>
-
-    </header>
     <main>
-        <section>
-            <p>hello george</p>
+        <section class="flex items-center justify-center min-h-screen bg-cyan-50">
+            <div class="flex flex-col items-start bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-40">
+                <h1 class="text-2xl">Web Speed Report</h1>
+                <table class="table-fixed">
+                    <thead>
+                    <tr>
+                        <th class="px-4">Timestamp</th>
+                        <th class="px-4">Download BandWidth</th>
+                        <th class="px-4">Download Bytes</th>
+                        <th class="px-4">Upload BandWidth</th>
+                        <th class="px-4">Upload Bytes</th>
+                    </tr>
+                    </thead>
+                    <tbody class="m-4">
+                    <?php
+                        foreach ($data as $row) {
+                                echo "<tr>";
+                                echo "<td class='px-4'>" . htmlspecialchars($row['timestamp']) . "</td>";
+                                echo "<td class='px-4'>" . htmlspecialchars($row['download_bandwidth']) . "</td>";
+                                echo "<td class='px-4'>" . htmlspecialchars($row['download_bytes']) . "</td>";
+                                echo "<td class='px-4'>" . htmlspecialchars($row['upload_bandwidth']) . "</td>";
+                                echo "<td class='px-4'>" . htmlspecialchars($row['upload_bytes']) . "</td>";
+                                echo "</tr>";
+                            }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 </body>

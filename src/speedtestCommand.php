@@ -185,7 +185,7 @@ class speedtestCommand extends Command
             return 0;
         }
 
-        return (filectime($a) < filectime($b)) ? -1 : 1;
+        return (filectime($a) > filectime($b)) ? -1 : 1;
     }
 
 }

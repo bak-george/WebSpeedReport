@@ -2,8 +2,6 @@
 
 namespace Core;
 
-use Core\Middleware\Middleware;
-
 class Router
 {
     protected $routes = [];
