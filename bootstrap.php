@@ -3,7 +3,6 @@
 use Core\Container;
 use Core\Database;
 use Core\App;
-const BASE_PATH = __DIR__.'/../';
 
 include('vendor/autoload.php');
 

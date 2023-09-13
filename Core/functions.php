@@ -5,7 +5,9 @@ function base_path($path)
     return BASE_PATH . $path;
 }
 
-function sort_by_created_at($a, $b)
+function view($path, $attributes = [])
 {
-    return filectime($a) < filectime($b);
+    extract($attributes);
+
+    require base_path('views/' . $path);
 }
