@@ -7,12 +7,6 @@ use Core\Database;
 $db = App::resolve(Database::class);
 $bytes = App::resolve(Bytes::class);
 
-$dataBytes = 1024;
-
-$bytes->setBytes($dataBytes);
-
-$bytes->toKilobytes();
-
 $data = $db->query("SELECT * FROM results LIMIT 10")->fetchAll();
 
 foreach ($data as $key => &$value) {
