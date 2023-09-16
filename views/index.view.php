@@ -16,9 +16,9 @@
                     <tr>
                         <th class="px-4">Timestamp</th>
                         <th class="px-4">Download BandWidth (Kb/s)</th>
-                        <th class="px-4">Download Bytes</th>
-                        <th class="px-4">Upload BandWidth</th>
-                        <th class="px-4">Upload Bytes</th>
+                        <th class="px-4">Download Bytes (Mb)</th>
+                        <th class="px-4">Upload BandWidth (Kb/s)</th>
+                        <th class="px-4">Upload Bytes (Mb)</th>
                     </tr>
                     </thead>
                     <tbody class="m-4">
