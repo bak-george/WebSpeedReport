@@ -21,7 +21,9 @@ class speedtestCommand extends Command
     {
         $db = App::resolve(Database::class);
 
-        $createDatabase = $db->query('CREATE DATABASE IF NOT EXISTS web_speed_reports;');
+        $dataBaseName   = 'web_speed_reports';
+        $dataTableName  = 'results';
+        $createDatabase = $db->query('CREATE DATABASE IF NOT EXISTS ' . $dataBaseName . ';');
 
         if ($createDatabase) {
             $output->writeln("Database 'web_speed_reports' created successfully.");
@@ -30,7 +32,7 @@ class speedtestCommand extends Command
             return Command::FAILURE;
         }
 
-        $sql = "CREATE TABLE IF NOT EXISTS results (
+        $sql = "CREATE TABLE IF NOT EXISTS " . $dataTableName . " (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     type VARCHAR(50),
                     timestamp TIMESTAMP,
@@ -85,9 +87,8 @@ class speedtestCommand extends Command
             mkdir($resultDir, 0777, true);
         }
 
-        $date = date('Y-m-d_H-i-s');
-        $filePath = $resultDir . "/result_{$date}.json";
-
+        $date       = date('Y-m-d_H-i-s');
+        $filePath   = $resultDir . "/result_{$date}.json";
         $jsonResult = shell_exec('speedtest -f json-pretty 2>&1');
 
         if ($jsonResult) {

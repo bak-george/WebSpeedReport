@@ -9,16 +9,16 @@
 <body>
     <main>
         <section class="flex items-center justify-center min-h-screen bg-cyan-50">
-            <div class="flex flex-col items-start bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-40">
-                <h1 class="text-2xl">Web Speed Report</h1>
-                <table class="table-fixed">
+            <div class="flex flex-col bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-40">
+                <h1 class="text-2xl text-center">Web Speed Report</h1>
+                <table class="table-auto">
                     <thead>
                     <tr>
                         <th class="px-4">Timestamp</th>
-                        <th class="px-4">Download BandWidth (Kb/s)</th>
-                        <th class="px-4">Download Bytes (Mb)</th>
+                        <th class="px-4">Download BdWidth (Kb/s)</th>
+                        <th class="px-4">Download (Mb)</th>
                         <th class="px-4">Upload BandWidth (Kb/s)</th>
-                        <th class="px-4">Upload Bytes (Mb)</th>
+                        <th class="px-4">Upload (Mb)</th>
                     </tr>
                     </thead>
                     <tbody class="m-4">
