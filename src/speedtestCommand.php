@@ -3,6 +3,7 @@
 use Core\App;
 use Core\Database;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,7 +16,10 @@ class speedtestCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Executes the speedtest command.');
+        $this->setDescription('Executes the speedtest command.')
+              ->addArgument('execution_datetime',
+                            InputArgument::OPTIONAL,
+                            'The date and time the script should execute (format: Y-m-d H:i:s)');
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
