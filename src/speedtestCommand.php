@@ -17,12 +17,51 @@ class speedtestCommand extends Command
     protected function configure()
     {
         $this->setDescription('Executes the speedtest command.')
-              ->addArgument('execution_datetime',
-                            InputArgument::OPTIONAL,
-                            'The date and time the script should execute (format: Y-m-d H:i:s)');
+             ->addArgument('frequency', InputArgument::OPTIONAL, 'Frequency to run the script (daily/weekly)')
+             ->addArgument('time', InputArgument::OPTIONAL, 'Time to run the script (format: H:i)');
+
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $frequency = $input->getArgument('frequency');
+        $time = $input->getArgument('time');
+
+        if ($frequency && $time) {
+            list($hour, $minute) = explode(':', $time);
+
+            $cronLine = "$minute $hour ";
+
+            if ($frequency === 'daily') {
+                $cronLine .= "* * * ";
+            } elseif ($frequency === 'weekly') {
+                $cronLine .= "* * 1 ";
+            } else {
+                $output->writeln("Invalid frequency. Please use 'daily' or 'weekly'.");
+                return Command::FAILURE;
+            }
+
+            $scriptPath = dirname(__DIR__) . '/webspeedreport';
+            $logPath    = dirname(__DIR__) . '/logs/webspeedreport.log';
+
+            if (!file_exists($logPath)) {
+                $logDir = dirname($logPath);
+                if (!is_dir($logDir)) {
+                    mkdir($logDir, 0777, true);
+                }
+                touch($logPath);
+            }
+
+            $cronLine .= "/usr/bin/php " . $scriptPath . " > " . $logPath . " 2>&1";
+
+            $outputFile = "/tmp/cronfile";
+            exec("crontab -l > $outputFile");
+            file_put_contents($outputFile, $cronLine . PHP_EOL, FILE_APPEND);
+            exec("crontab $outputFile");
+            unlink($outputFile);
+
+            $output->writeln("Cron job has been added.");
+        }
+
         $db = App::resolve(Database::class);
 
         $dataBaseName   = 'web_speed_reports';
