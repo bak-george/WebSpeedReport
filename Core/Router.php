@@ -30,7 +30,9 @@ class Router
     public function route($uri, $method)
     {
         foreach ($this->routes as $route) {
-            return require base_path('Http/controllers/' . $route['controller']);
+            if ($uri === $route['uri'] && $method === $route['method']) {
+                return require base_path('Http/Controllers/' . $route['controller']);
+            }
         }
     }
 }

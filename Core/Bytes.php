@@ -32,4 +32,13 @@ class Bytes
     {
         return $this->toMegabytes() / 1024;
     }
+
+    public function conversionAndRound($function, $round) {
+		return round($this->$function(), $round);
+	}
+
+    public static function instantiateConvertAndRound($byteValue, $function, $round) {
+        $instance = new self($byteValue);
+        return $instance->conversionAndRound($function, $round);
+    }
 }
