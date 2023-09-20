@@ -52,7 +52,7 @@ cd WebSpeedReport
 ```
 <p>This command will also create the database and table to insert the generated data.</p>
 
-<h2>Starting the local PHP server</h2>
+<h2>2.Starting the local PHP server</h2>
 <p>In order to see your generated data you'll need to run PHP localy on your computer.</p>
 <p>You can do that by running the following command in your terminal:</p>
 
@@ -60,7 +60,7 @@ cd WebSpeedReport
 php -S localhost:8000 -t public
 ```
 
-<h2>Accessing the dashboard</h2>
+<h2>3.Accessing the dashboard</h2>
 <p>After you have started the local PHP server, you can access the dashboard by opening the following link in your browser:</p>
 
 ```bash
