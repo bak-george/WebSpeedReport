@@ -75,6 +75,15 @@ class speedtestCommand extends Command
             return Command::FAILURE;
         }
 
+        $useDatabase = $db->query('USE ' . $dataBaseName . ';');
+
+        if ($useDatabase) {
+            $output->writeln("Using database 'web_speed_reports'.");
+        } else {
+            $output->writeln("Failed to use database.");
+            return Command::FAILURE;
+        }
+
         $sql = "CREATE TABLE IF NOT EXISTS " . $dataTableName . " (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     type VARCHAR(50),
@@ -216,6 +225,7 @@ class speedtestCommand extends Command
 
         if ($insertSql) {
             $output->writeln("Result saved to database.");
+
             return Command::SUCCESS;
         } else {
             $output->writeln("Failed to save result to database.");

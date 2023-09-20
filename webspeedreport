@@ -4,12 +4,14 @@
 
 use Symfony\Component\Console\Application;
 
-
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/src/speedtestCommand.php';
 
+echo "WebSpeedReport started.\n";
+
 $application = new Application();
 $application->add(new speedtestCommand());
+
 try {
     $application->run();
 } catch (Exception $e) {

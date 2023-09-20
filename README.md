@@ -2,14 +2,12 @@
 <p>WebSpeedReport it's an <b>open source tool</b> that provides more in depth information about your internet connection.</p>
 <ul><b>Features:</b>
     <li>It utilises SpeedTest from Ookla.</li>
-    <li>Helps you set cron-jobs to run speedtests in the background.</li>
+    <li>Has a command that handles the database along with the created data.</li>
     <li>Gives you an overall view of your data in a dashboard.</li>
     <li>Provides an in-depth view from your internet test runs.</li>
 </ul>
 <img src="public/images/demo1.png">
 <img src="public/images/demo2.png">
-
-
 
 
 <h3>Notice of Usage of Speedtest® by Ookla® in Open Source Projects</h3>
