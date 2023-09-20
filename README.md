@@ -12,9 +12,13 @@
 <h1>Installation</h1>
 <h2><b>1. SpeedTest</b></h2>
 <p>First of all, you need to install SpeedTest CLI from Ookla. You can find the installation instructions <a href="https://www.speedtest.net/apps/cli">here</a>.</p>
-<h2><b>2. Composer</b></h2>
+<h2>2.Install PHP</h2>
+<p>Based on your operating system install PHP</p>
+<h2>3.Install MySql</h2>
+<p>Based on your operating system install MySQL</p>
+<h2><b>4. Composer</b></h2>
 <p>After you have installed SpeedTest CLI, you need to install Composer. You can find the installation instructions <a href="https://getcomposer.org/download/">here</a>.</p>
-<h2><b>3. Clone the repository</b></h2>
+<h2><b>5. Clone the repository</b></h2>
 <p>After you have installed Composer, you need to clone the repository. You can do that by running the following command in your terminal:</p>
 
 ```bash
@@ -25,14 +29,14 @@ git clone https://github.com/bak-george/WebSpeedReport.git
 ```bash
 cd WebSpeedReport
 ```
-<h2><b>4. Install dependencies</b></h2>
+<h2><b>6. Install dependencies</b></h2>
 <p>After you have cloned the repository, you need to install the dependencies. You can do that by running the following command in your terminal:</p>
 
 ```bash
 composer install
 ```
 
-<h2><b>6.Provide Permissions for the executable</b></h2>
+<h2><b>7.Provide Permissions for the executable</b></h2>
 <p>After you have installed the dependencies, you need to provide permissions for the executable. You can do that by running the following command in your terminal:</p>
 
 ```bash
