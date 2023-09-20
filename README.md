@@ -23,4 +23,4 @@ All users and contributors of this open source project are advised to review Ook
 
 Please support the original creators by visiting Ookla's official website for Speedtest: https://www.speedtest.net/
 
-If there are any concerns or copyright issues, please contact [Your Contact Information] to address them promptly.</p>
+If there are any concerns or copyright issues, please contact george_bak'at'proton.me to address them promptly.</p>
