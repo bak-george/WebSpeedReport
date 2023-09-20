@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 require_once 'vendor/autoload.php';
 require_once 'bootstrap.php';
@@ -16,17 +17,23 @@ class speedtestCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Executes the speedtest command.')
-             ->addArgument('frequency', InputArgument::OPTIONAL, 'Frequency to run the script (daily/weekly)')
-             ->addArgument('time', InputArgument::OPTIONAL, 'Time to run the script (format: H:i)');
+        $this->setDescription('Executes the speedtest command and saves the results into your database.')
+             ->addArgument('frequency', InputArgument::OPTIONAL, '!Under Development! Frequency to run the script (daily/weekly)')
+             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i)');
 
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $progressBar = new ProgressBar($output, 6);
+        $progressBar->start();
         $frequency = $input->getArgument('frequency');
         $time = $input->getArgument('time');
 
         if ($frequency && $time) {
+            //until the cron-code is set up
+            $output->writeln("<error>Cron job functionality under development.</error>");
+            return Command::FAILURE;
+
             list($hour, $minute) = explode(':', $time);
 
             $cronLine = "$minute $hour ";
@@ -36,7 +43,7 @@ class speedtestCommand extends Command
             } elseif ($frequency === 'weekly') {
                 $cronLine .= "* * 1 ";
             } else {
-                $output->writeln("Invalid frequency. Please use 'daily' or 'weekly'.");
+                $output->writeln("<error>Invalid frequency. Please use 'daily' or 'weekly'.</error>");
                 return Command::FAILURE;
             }
 
@@ -69,18 +76,22 @@ class speedtestCommand extends Command
         $createDatabase = $db->query('CREATE DATABASE IF NOT EXISTS ' . $dataBaseName . ';');
 
         if ($createDatabase) {
-            $output->writeln("Database 'web_speed_reports' created successfully.");
+            echo PHP_EOL;
+            $output->writeln("<info>Database 'web_speed_reports' created successfully.</info>");
+            $progressBar->advance();
         } else {
-            $output->writeln("Failed to create database.");
+            $output->writeln("<error>Failed to create database.</error>");
             return Command::FAILURE;
         }
 
         $useDatabase = $db->query('USE ' . $dataBaseName . ';');
 
         if ($useDatabase) {
+            echo PHP_EOL;
             $output->writeln("Using database 'web_speed_reports'.");
+            $progressBar->advance();
         } else {
-            $output->writeln("Failed to use database.");
+            $output->writeln("<error>Failed to use database.</error>");
             return Command::FAILURE;
         }
 
@@ -128,9 +139,11 @@ class speedtestCommand extends Command
         $createTable = $db->query($sql);
 
         if ($createTable) {
-            $output->writeln("Table 'results' created successfully.");
+            echo PHP_EOL;
+            $output->writeln("<info>Table 'results' created successfully.</info>");
+            $progressBar->advance();
         } else {
-            $output->writeln("Failed to create table.");
+            $output->writeln("<error>Failed to create table.</error>");
             return Command::FAILURE;
         }
 
@@ -144,10 +157,12 @@ class speedtestCommand extends Command
         $jsonResult = shell_exec('speedtest -f json-pretty 2>&1');
 
         if ($jsonResult) {
+            echo PHP_EOL;
             file_put_contents($filePath, $jsonResult);
-            $output->writeln("Saving results saved to: $filePath");
+            $output->writeln("<info>Saving results saved to: $filePath</info>");
+            $progressBar->advance();
         } else {
-            $output->writeln("Failed to execute speedtest.");
+            $output->writeln("<error>Failed to execute speedtest.</error>");
             return Command::FAILURE;
         }
 
@@ -160,9 +175,11 @@ class speedtestCommand extends Command
         if ($latestFile) {
             $jsonContent = file_get_contents($latestFile);
             $decodedData = json_decode($jsonContent, true);
-            $output->writeln("Decoding Data...");
+            echo PHP_EOL;
+            $output->writeln("<info>Decoding Data...</info>");
+            $progressBar->advance();
         } else {
-            $output->writeln("No results No JSON files found in the directory:" . $resultDir);
+            $output->writeln("<error>No results No JSON files found in the directory:</error>" . $resultDir);
             return Command::FAILURE;
         }
 
@@ -224,11 +241,12 @@ class speedtestCommand extends Command
         ]);
 
         if ($insertSql) {
-            $output->writeln("Result saved to database.");
-
+            echo PHP_EOL;
+            $output->writeln("<info>Result saved to database.</info>");
+            $progressBar->finish();
             return Command::SUCCESS;
         } else {
-            $output->writeln("Failed to save result to database.");
+            $output->writeln("<error>Failed to save result to database.</error>");
             return Command::FAILURE;
         }
     }
