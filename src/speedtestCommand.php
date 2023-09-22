@@ -24,8 +24,6 @@ class speedtestCommand extends Command
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $progressBar = new ProgressBar($output, 6);
-        $progressBar->start();
         $frequency = $input->getArgument('frequency');
         $time = $input->getArgument('time');
 
@@ -75,6 +73,9 @@ class speedtestCommand extends Command
 
             $output->writeln("Cron job has been added.");
         }
+
+        $progressBar = new ProgressBar($output, 6);
+        $progressBar->start();
 
         $db = App::resolve(Database::class);
 
