@@ -55,6 +55,11 @@ cd WebSpeedReport
 ./webspeedreport app:speedtest
 ```
 <p>This command will also create the database and table to insert the generated data.</p>
+In order to get help for the command you can run the following command in your terminal:
+
+```bash
+./webspeedreport app:speedtest --help
+```
 
 <h2>2.Starting the local PHP server</h2>
 <p>In order to see your generated data you'll need to run PHP localy on your computer.</p>

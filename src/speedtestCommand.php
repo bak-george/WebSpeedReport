@@ -17,10 +17,10 @@ class speedtestCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Executes the speedtest command and saves the results into your database.')
+        $this->setName('app:speedtest')
+             ->setDescription('Executes the speedtest command and saves the results into your database.')
              ->addArgument('frequency', InputArgument::OPTIONAL, '!Under Development! Frequency to run the script (daily/weekly)')
-             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i)')
-             ->addArgument('path/to/WebSpeedReport', InputArgument::OPTIONAL, 'Path to WebSpeedReport directory (example: /Users/george-bak/Documents/GitHub/WebSpeedReport');
+             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i)');
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -34,9 +34,17 @@ class speedtestCommand extends Command
             $output->writeln("<error>Cron job functionality under development.</error>");
             return Command::FAILURE;
 
-            list($hour, $minute) = explode(':', $time);
+            $individualTimes = explode(',', $time);
+            $minutes = [];
+            $hours = [];
 
-            $cronLine = "$minute $hour ";
+            foreach ($individualTimes as $t) {
+                list($h, $m) = explode(':', $t);
+                $hours[] = $h;
+                $minutes[] = $m;
+            }
+
+            $cronLine = implode(',', $minutes) . " " . implode(',', $hours) . " ";
 
             if ($frequency === 'daily') {
                 $cronLine .= "* * * ";
@@ -47,7 +55,6 @@ class speedtestCommand extends Command
                 return Command::FAILURE;
             }
 
-            $scriptPath = $input->getArgument('path/to/WebSpeedReport');
             $logPath    = dirname(__DIR__) . '/logs/webspeedreport.log';
 
             if (!file_exists($logPath)) {
@@ -58,7 +65,7 @@ class speedtestCommand extends Command
                 touch($logPath);
             }
 
-            $cronLine .= $scriptPath . " && ./webspeedreport app:speedtest" . " > " . $logPath . " 2>&1";
+            $cronLine .= "cd " . dirname(__DIR__) . " && ./webspeedreport app:speedtest" . " > " . $logPath . " 2>&1";
 
             $outputFile = "/tmp/cronfile";
             exec("crontab -l > $outputFile");
