@@ -19,8 +19,8 @@ class speedtestCommand extends Command
     {
         $this->setDescription('Executes the speedtest command and saves the results into your database.')
              ->addArgument('frequency', InputArgument::OPTIONAL, '!Under Development! Frequency to run the script (daily/weekly)')
-             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i)');
-
+             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i)')
+             ->addArgument('path/to/WebSpeedReport', InputArgument::OPTIONAL, 'Path to WebSpeedReport directory (example: /Users/george-bak/Documents/GitHub/WebSpeedReport');
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -47,7 +47,7 @@ class speedtestCommand extends Command
                 return Command::FAILURE;
             }
 
-            $scriptPath = dirname(__DIR__) . '/webspeedreport';
+            $scriptPath = $input->getArgument('path/to/WebSpeedReport');
             $logPath    = dirname(__DIR__) . '/logs/webspeedreport.log';
 
             if (!file_exists($logPath)) {
@@ -58,7 +58,7 @@ class speedtestCommand extends Command
                 touch($logPath);
             }
 
-            $cronLine .= "/usr/bin/php " . $scriptPath . " > " . $logPath . " 2>&1";
+            $cronLine .= $scriptPath . " && ./webspeedreport app:speedtest" . " > " . $logPath . " 2>&1";
 
             $outputFile = "/tmp/cronfile";
             exec("crontab -l > $outputFile");
