@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Core\Bytes;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,6 +17,10 @@ class  DataShowController extends AbstractController
         $this->bytes = new Bytes();
     }
 
+    /**
+     * @throws Exception
+     * @throws \Exception
+     */
     #[Route('/data', name: 'data_list')]
     public function view($id, Connection $connection): Response
     {
@@ -35,7 +40,7 @@ class  DataShowController extends AbstractController
         $headers = [];
         foreach ($data as $key => $value) {
             if (!$this->getTableHeaders($key)) {
-                $headers[$key] = $key;
+                throw new \Exception('No header for ' . $key);
             } else {
                 $headers[$key] = $this->getTableHeaders($key);
             }
