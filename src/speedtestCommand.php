@@ -13,14 +13,12 @@ require_once 'bootstrap.php';
 
 class speedtestCommand extends Command
 {
-    protected static $defaultName = 'app:speedtest';
-
     protected function configure()
     {
         $this->setName('app:speedtest')
              ->setDescription('Executes the speedtest command and saves the results into your database.')
              ->addArgument('frequency', InputArgument::OPTIONAL, '!Under Development! Frequency to run the script (daily/weekly)')
-             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i)');
+             ->addArgument('time', InputArgument::OPTIONAL, '!Under Development! Time to run the script (format: H:i or for multiple times: H:i,H:i,H:i');
     }
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -267,5 +265,4 @@ class speedtestCommand extends Command
 
         return (filectime($a) > filectime($b)) ? -1 : 1;
     }
-
 }

@@ -5,12 +5,12 @@ namespace Core;
 class Bytes
 {
     protected $bytes;
+    protected $bandwidth;
 
-    public function __construct($bytes = null)
+    public function __construct($bytes = null, $bandwidth = null)
     {
-        if ($bytes !== null) {
-            $this->bytes = $bytes;
-        }
+        $this->setBytes($bytes);
+        $this->setBandwidth($bandwidth);
     }
 
     public function setBytes($bytes)
@@ -18,27 +18,43 @@ class Bytes
         $this->bytes = $bytes;
     }
 
-    public function toKilobytes()
+    public function setBandwidth($bandwidth)
     {
-        return $this->bytes / 1024;
+        $this->bandwidth = $bandwidth;
     }
 
-    public function toMegabytes()
+    public function toKB($value = null)
     {
-        return $this->toKilobytes() / 1024;
+        return $this->convertToBase($value, 1);
     }
 
-    public function toGigabytes()
+    public function toMB($value = null)
     {
-        return $this->toMegabytes() / 1024;
+        return $this->convertToBase($value, 2);
     }
 
-    public function conversionAndRound($function, $round) {
-		return round($this->$function(), $round);
-	}
+    public function toGB($value = null)
+    {
+        return $this->convertToBase($value, 3);
+    }
 
-    public static function instantiateConvertAndRound($byteValue, $function, $round) {
-        $instance = new self($byteValue);
-        return $instance->conversionAndRound($function, $round);
+    private function convertToBase($value, $power)
+    {
+        return $value / (1_024 ** $power);
+    }
+
+    public function bandwidthToKBps()
+    {
+        return $this->toKB($this->bandwidth);
+    }
+
+    public function bandwidthToMBps()
+    {
+        return $this->toMB($this->bandwidth);
+    }
+
+    public function bandwidthToGBps()
+    {
+        return $this->toGB($this->bandwidth);
     }
 }

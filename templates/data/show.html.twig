@@ -1,0 +1,39 @@
+{% block head %}
+    {% include 'home/head.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <body class="bg-gray-100 font-mono">
+    <section class="container mx-auto max-w-8xl md:p-10">
+        <a href="/">
+            <div class="rounded-full bg-gray-500 inline-block px-4 py-2 shadow-lg hover:cursor-pointer hover:bg-gray-100 transition duration-300 ease-out hover:ease-in">Back to Dashboard</div>
+        </a>
+        <div class="flex flex-col mx-auto bg-white mt-4 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <table class="bg-white border-gray-200">
+                <thead>
+                <tr>
+                    <th class="py-2 px-2 border-b">Title</th>
+                    <th class="py-2 px-2 border-b">Data</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in data %}
+                    <tr class="hover:bg-gray-100">
+                        <td class="text-center py-2 px-4"> <strong>{{ headers[key] }}</strong></td>
+                        {% if key == 'result_url' %}
+                            <td class="text-center py-2 px-4 hover:cursor-pointer hover:bg-red-600 hover:text-white hover:cursor-pointer transition duration-300 ease-out hover:ease-in">
+                                <a href="{{ value }}" target="_blank" rel="noopener noreferrer">
+                                    {{ value }}
+                                </a>
+                            </td>
+                        {% else %}
+                            <td class="text-center py-2 px-4">{{ value }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+    </body>
+{% endblock %}
