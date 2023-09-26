@@ -40,7 +40,8 @@ class  DataShowController extends AbstractController
         $headers = [];
         foreach ($data as $key => $value) {
             if (!$this->getTableHeaders($key)) {
-                throw new \Exception('No header for ' . $key);
+                //temporary
+                $headers[$key] = $key;
             } else {
                 $headers[$key] = $this->getTableHeaders($key);
             }
