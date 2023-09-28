@@ -1,6 +1,6 @@
 <?php
 
-use Core\Bits;
+use Core\Bytes;
 use Core\Container;
 use Core\Database;
 use Core\App;
@@ -16,7 +16,7 @@ $container->bind('Core\Database', function () {
 });
 
 $container->bind('Core\Bytes', function () {
-    return new Bits();
+    return new bytes();
 });
 
 App::setContainer($container);

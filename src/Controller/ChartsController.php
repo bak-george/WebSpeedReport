@@ -20,11 +20,33 @@ class ChartsController extends AbstractController
     #[Route('/charts', name: 'charts_index')]
     public function index(Connection $connection): Response
     {
-        $sql = "SELECT timestamp,download_bytes FROM results";
-        $downLoadData = $connection->executeQuery($sql)->fetchAllAssociative();
+        $sql = "SELECT timestamp,download_bytes,upload_bytes,
+                        download_bandwidth,upload_bandwidth,
+                        ping_latency, ping_low, ping_high
+                FROM results";
+        $chartData = $connection->executeQuery($sql)->fetchAllAssociative();
+
+        foreach ($chartData as $key => $value) {
+            $chartData[$key]['download_bytes'] = round($this->bytes->toMB($value['download_bytes'], 2));
+            $chartData[$key]['upload_bytes'] = round($this->bytes->toMB($value['upload_bytes'], 2));
+
+            $this->bytes->setBandwidth($value['download_bandwidth']);
+            $chartData[$key]['download_bandwidth'] = round($this->bytes->bandwidthToMBps(), 2);
+
+            $this->bytes->setBandwidth($value['upload_bandwidth']);
+            $chartData[$key]['upload_bandwidth'] = round($this->bytes->bandwidthToMBps(), 2);
+        }
+
+        $sql = "SELECT server_country, COUNT(*) AS number_of_occurrences
+                FROM results
+                GROUP BY server_country";
+        $countryData = $connection->executeQuery($sql)->fetchAllAssociative();
+
+
 
         return $this->render('charts/body.html.twig', [
-            'downLoadData' => $downLoadData,
+            'chartData' => $chartData,
+            'countryData' => $countryData
         ]);
     }
 }
