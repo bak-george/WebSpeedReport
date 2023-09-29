@@ -37,16 +37,28 @@ class ChartsController extends AbstractController
             $chartData[$key]['upload_bandwidth'] = round($this->bytes->bandwidthToMBps(), 2);
         }
 
-        $sql = "SELECT server_country, COUNT(*) AS number_of_occurrences
+        $sql = "SELECT server_country, COUNT(*) AS number_of_countries
                 FROM results
                 GROUP BY server_country";
         $countryData = $connection->executeQuery($sql)->fetchAllAssociative();
 
+        $sql = "SELECT isp, COUNT(*) AS number_of_isps
+                FROM results
+                GROUP BY isp";
 
+        $ispData = $connection->executeQuery($sql)->fetchAllAssociative();
+
+        $sql = "SELECT server_name, COUNT(*) AS number_of_server_names
+                FROM results
+                GROUP BY server_name";
+
+        $serverNameData = $connection->executeQuery($sql)->fetchAllAssociative();
 
         return $this->render('charts/body.html.twig', [
             'chartData' => $chartData,
-            'countryData' => $countryData
+            'countryData' => $countryData,
+            'ispData' => $ispData,
+            'serverNameData' => $serverNameData
         ]);
     }
 }

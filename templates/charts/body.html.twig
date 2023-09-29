@@ -11,6 +11,8 @@
             drawRegionsMap();
             drawBandwidthChart();
             pingLatencyChart();
+            ispChart();
+            serverNameChart();
         });
 
         function drawChart() {
@@ -22,9 +24,15 @@
             ]);
 
             var options = {
-                title: 'Download & Upload Mb per run',
                 curveType: 'function',
-                legend: { position: 'right' }
+                legend: { position: 'right' },
+                lineWidth: 3,
+                pointSize: 5,
+                hAxis: {
+                    gridlines: {
+                        color: '#e5e5e5'
+                    }
+                }
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('downloads_chart'));
@@ -65,19 +73,17 @@
                 title: 'Ping Latency over Time',
                 curveType: 'function',
                 legend: { position: 'right' },
-                vAxis: { title: 'Latency (ms)' }
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('ping_latency_chart'));
             chart.draw(data, options);
         }
 
-
         function drawRegionsMap() {
             var data = google.visualization.arrayToDataTable([
                 ['Country', 'Popularity'],
                 {% for rows in countryData %}
-                ['{{ rows.server_country }}', {{ rows.number_of_occurrences }}],
+                ['{{ rows.server_country }}', {{ rows.number_of_countries }}],
                 {% endfor %}
             ]);
 
@@ -85,17 +91,69 @@
             var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
             chart.draw(data, options);
         }
+
+        function ispChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Internet Service Provider', 'Popularity'],
+                {% for rows in ispData %}
+                ['{{ rows.isp }}', {{ rows.number_of_isps }}],
+                {% endfor %}
+            ]);
+
+            var options = {
+                title: 'Internet Service Provider Popularity',
+                pieHole: 0.4,
+                is3D: true
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('isp_chart'));
+            chart.draw(data, options);
+        }
+
+        function serverNameChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['ServerName', 'Popularity'],
+                {% for rows in serverNameData %}
+                ['{{ rows.server_name }}', {{ rows.number_of_server_names }}],
+                {% endfor %}
+            ]);
+
+            var options = {
+                title: 'ServerName Popularity',
+                pieHole: 0.6,
+                is3D: true,
+                legend: { position: 'left' },
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('server_name_chart'));
+            chart.draw(data, options);
+        }
     </script>
 {% endblock %}
 
 {% block body %}
-    <main class="font-mono">
+    <main>
         <h2 class="bg-red-600 text-center">Charts are currently under development</h2>
         <div class="container mx-auto max-w-8xl mb-20 md:p-10">
-            <section class="flex flex-col bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15" id="downloads_chart" style="width: 100%; height: 600px;"></section>
-            <section class="flex flex-col bg-white mt-20 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15" id="bandwidth_chart" style="width: 100%; height: 600px;"></section>
-            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15" id="regions_div" style="width: 100%;; height: 600px;"></section>
-            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15" id="ping_latency_chart" style="width: 100%;; height: 650px;"></section>
+            <section class="flex flex-col bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Download & Upload Mb / run</h2>
+                <div id="downloads_chart" class="h-[600px] -translate-y-14"></div>
+            </section>
+            <section class="flex flex-col bg-white mt-20 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                <div id="bandwidth_chart" style="width: 100%; height: 600px;"></div>
+            </section>
+            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                <div id="ping_latency_chart" style="width:100%; height: 650px;"></div>
+            </section>
+            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                 <div id="isp_chart" style="width: 100%; height: 650px;"></div>
+            </section>
+            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                <div id="server_name_chart" style="width: 100%; height: 650px;"></div>
+            </section>
+            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                <div id="regions_div" style="width: 100%; height: 600px;"></div>
+            </section>
         </div>
     </main>
 {% endblock %}
