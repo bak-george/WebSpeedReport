@@ -1,5 +1,5 @@
 <h1>WebSpeedReport</h1>
-<p>WebSpeedReport it's an <b>open source tool</b> that provides more in depth information about your internet connection.</p>
+<p>WebSpeedReport is an <b>open source tool</b> that provides more in depth information about your internet connection.</p>
 <ul><b>Features:</b>
     <li>It utilises SpeedTest from Ookla.</li>
     <li>Has a command that handles the database along with the created data.</li>
