@@ -2,22 +2,53 @@
     {% include 'home/head.html.twig' %}
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script type="text/javascript">google.charts.load('current', {'packages':['corechart', 'geochart']});
+            google.charts.setOnLoadCallback(function() {
+                drawChart();
+                ispChart();
+            });
+
             function drawChart() {
                 let data = google.visualization.arrayToDataTable([
                     ['timestamp', 'Download Mb', 'Upload Mb'],
-                    {% for rows in data %}
-                    ['{{ rows.timestamp }}', {{ rows.download_bytes }}, {{ rows.upload_bytes }}],
+                    {% for row in data %}
+                    ['{{ row.timestamp }}', {{ row.download_bytes }}, {{ row.upload_bytes }}],
                     {% endfor %}
                 ]);
 
                 let options = {
                     curveType: 'function',
-                    legend: { position: 'right' },
+                    legend: { position: 'bottom' },
                     lineWidth: 3,
                     pointSize: 5,
+                    backgroundColor: 'transparent',
+                    hAxis: {
+                        textPosition: 'none',
+                        gridlines: {
+                            color: 'transparent'
+                        }
+                    },
                 };
 
                 let chart = new google.visualization.LineChart(document.getElementById('downloads_chart'));
+                chart.draw(data, options);
+            }
+
+            function ispChart() {
+                let data = google.visualization.arrayToDataTable([
+                    ['Internet Service Provider', 'Popularity'],
+                    {% for rows in ispData %}
+                    ['{{ rows.isp }}', {{ rows.number_of_isps }}],
+                    {% endfor %}
+                ]);
+
+                let options = {
+                    pieHole: 0.4,
+                    is3D: true,
+                    backgroundColor: 'transparent',
+                    legend: 'top',
+                };
+
+                let chart = new google.visualization.PieChart(document.getElementById('isp_chart'));
                 chart.draw(data, options);
             }
         </script>
@@ -26,7 +57,7 @@
     <body>
     <main>
         <div class="container mx-auto max-w-8xl mb-20 md:p-10">
-            <div class="grid gap-6 grid-cols-1 text-white md:grid-cols-4 md:grid-rows-2">
+            <section class="grid gap-6 grid-cols-1 text-white md:grid-cols-4 md:grid-rows-2">
                 <!--Box 1-->
                 <div class="relative bg-blue-600 p-10 h-64 rounded-xl transition duration-300 ease-out hover:ease-in md:col-span-2 shadow-2xl hover:scale-105">
                     <div class="flex z-10 space-x-4">
@@ -105,11 +136,21 @@
                         {{ averages[3] }}
                     </p>
                 </div>
-            </div>
+            </section>
             <!-- Charts -->
-
+            <section class="grid gap-6 grid-cols-1 text-white mt-10 md:grid-cols-4 md:grid-rows-1">
+                <div class="relative bg-white rounded-xl transition duration-300 ease-out hover:ease-in hover:bg-gray-100 md:col-span-3 shadow-2xl flex items-center justify-center">
+                    <div id="downloads_chart" class="h-full w-full"></div>
+                </div>
+                <div class="relative bg-white p-10 h-auto rounded-xl transition duration-300 ease-out hover:ease-in hover:bg-gray-100 md:col-span-1 shadow-2xl flex items-center justify-center">
+                    <div id="isp_chart" class="h-[600px]"></div>
+                </div>
+            </section>
+            <a href="/charts">
+                <div class="rounded-full mt-5 bg-gray-500 inline-block px-4 py-2 shadow-lg hover:cursor-pointer hover:bg-gray-100 transition duration-300 ease-out hover:ease-in hover:text-black">Discover More Charts</div>
+            </a>
             <!-- Table -->
-            <section class="flex flex-col bg-white mt-20 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <section class="flex flex-col bg-white mt-10 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
                 <table class="table-auto">
                     <thead>
                     <tr>

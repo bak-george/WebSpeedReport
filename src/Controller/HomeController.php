@@ -64,7 +64,6 @@ class HomeController extends AbstractController
             $value['download_bytes'] = round($this->bytes->toMB($value['download_bytes']), 2);
             $value['upload_bytes'] = round($this->bytes->toMB($value['upload_bytes']), 2);
 
-
             $this->bytes->setBandwidth($value['download_bandwidth']);
             $value['download_bandwidth'] = round($this->bytes->bandwidthToMBps(), 2);
 
@@ -72,12 +71,19 @@ class HomeController extends AbstractController
             $value['upload_bandwidth'] = round($this->bytes->bandwidthToMBps(), 2);
         }
 
+        $sql = "SELECT isp, COUNT(*) AS number_of_isps
+                FROM results
+                GROUP BY isp";
+
+        $ispData = $connection->executeQuery($sql)->fetchAllAssociative();
+
         return $this->render('home/body.html.twig', [
             'data' => $data,
             'averages' => $averages,
             'maxValues' => $maxValues,
             'minValues' => $minValues,
-            'serverName' => $serverName
+            'serverName' => $serverName,
+            'ispData' => $ispData,
         ]);
     }
 }
