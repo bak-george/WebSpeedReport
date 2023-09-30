@@ -72,7 +72,6 @@ class HomeController extends AbstractController
             $value['upload_bandwidth'] = round($this->bytes->bandwidthToMBps(), 2);
         }
 
-
         return $this->render('home/body.html.twig', [
             'data' => $data,
             'averages' => $averages,
