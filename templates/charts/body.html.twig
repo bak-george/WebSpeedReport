@@ -13,50 +13,91 @@
             serverNameChart();
         });
 
-        function drawChart() {
+        function drawChart(callback) {
             let data = google.visualization.arrayToDataTable([
-                ['timestamp', 'Download Mb', 'Upload Mb'],
+                ['timestamp', 'Download Mb', 'Upload Mb', {role: 'annotation'}], // Added an annotation role for the unique ID
                 {% for rows in chartData %}
-                ['{{ rows.timestamp }}', {{ rows.download_bytes }}, {{ rows.upload_bytes }}],
+                ['{{ rows.timestamp }}', {{ rows.download_bytes }}, {{ rows.upload_bytes }}, '{{ rows.id }}'], // Assuming rows.id is the unique ID
                 {% endfor %}
             ]);
 
             let options = {
                 curveType: 'function',
                 legend: { position: 'right' },
+                vAxis: { title: 'Mb' },
                 lineWidth: 3,
                 pointSize: 5,
+                annotations: {
+                    textStyle: {
+                        fontName: 'Arial',
+                        fontSize: 0,
+                        color: 'transparent',
+                        auraColor: 'transparent'
+                    },
+                    stem: {
+                        color: 'transparent'
+                    }
+                }
             };
 
             let chart = new google.visualization.LineChart(document.getElementById('downloads_chart'));
             chart.draw(data, options);
+
+            google.visualization.events.addListener(chart, 'select', function () {
+                let selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    let idValue = data.getValue(selectedItem.row, 3);
+                    window.location.href = '/data/' + idValue;
+                }
+            });
         }
+
 
         function drawBandwidthChart() {
             let data = google.visualization.arrayToDataTable([
-                ['timestamp', 'Download Bandwidth', 'Upload Bandwidth'],
+                ['timestamp', 'Download Bandwidth', 'Upload Bandwidth', {role: 'annotation'}],
                 {% for rows in chartData %}
-                ['{{ rows.timestamp }}', {{ rows.download_bandwidth }}, {{ rows.upload_bandwidth }}],
+                ['{{ rows.timestamp }}', {{ rows.download_bandwidth }}, {{ rows.upload_bandwidth }}, '{{ rows.id }}'],
                 {% endfor %}
             ]);
 
             let options = {
                 curveType: 'function',
                 legend: { position: 'right' },
-                vAxis: { title: 'Bandwidth (Mb/s)' },
+                vAxis: { title: 'Mb/s' },
                 lineWidth: 3,
                 pointSize: 5,
+                annotations: {
+                    textStyle: {
+                        fontName: 'Arial',
+                        fontSize: 0,
+                        color: 'transparent',
+                        auraColor: 'transparent'
+                    },
+                    stem: {
+                        color: 'transparent'
+                    }
+                }
             };
 
             let chart = new google.visualization.LineChart(document.getElementById('bandwidth_chart'));
             chart.draw(data, options);
+
+            google.visualization.events.addListener(chart, 'select', function() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var idValue = data.getValue(selectedItem.row, 3);
+                    window.location.href = '/data/' + idValue;
+                }
+            });
         }
+
 
         function pingLatencyChart() {
             let data = google.visualization.arrayToDataTable([
-                ['timestamp', 'Ping Latency', 'Ping Low', 'Ping High'],
+                ['timestamp', 'Ping Latency', 'Ping Low', 'Ping High', {role: 'annotation'}],
                 {% for rows in chartData %}
-                ['{{ rows.timestamp }}', {{ rows.ping_latency }}, {{ rows.ping_low }}, {{ rows.ping_high }}],
+                ['{{ rows.timestamp }}', {{ rows.ping_latency }}, {{ rows.ping_low }}, {{ rows.ping_high }}, '{{ rows.id }}'],
                 {% endfor %}
             ]);
 
@@ -64,13 +105,34 @@
                 isStacked: true,
                 curveType: 'function',
                 legend: { position: 'right' },
+                vAxis: { title: 'ms' },
                 lineWidth: 2,
                 pointSize: 5,
+                annotations: {
+                    textStyle: {
+                        fontName: 'Arial',
+                        fontSize: 0,
+                        color: 'transparent',
+                        auraColor: 'transparent'
+                    },
+                    stem: {
+                        color: 'transparent'
+                    }
+                }
             };
 
             let chart = new google.visualization.LineChart(document.getElementById('ping_latency_chart'));
             chart.draw(data, options);
+
+            google.visualization.events.addListener(chart, 'select', function() {
+                var selectedItem = chart.getSelection()[0];
+                if (selectedItem) {
+                    var idValue = data.getValue(selectedItem.row, 4);  // Note the change in column index to 4 since we added the annotation
+                    window.location.href = '/data/' + idValue;
+                }
+            });
         }
+
 
         function drawRegionsMap() {
             let data = google.visualization.arrayToDataTable([
@@ -125,33 +187,34 @@
 
 {% block body %}
     <main>
-        <div class="container mx-auto max-w-8xl mb-20 md:p-10">
+        <div class="container relative mx-auto max-w-8xl mb-20 md:p-10">
+            <p class="absolute inset-y-0 left-0 w-16 -translate-x-8 mt-20">Click the points in the graph line for more info</p>
             <a href="/">
                 <div class="rounded-full bg-gray-500 inline-block px-4 py-2 shadow-lg hover:cursor-pointer hover:bg-gray-100 transition duration-300 ease-out hover:ease-in">Back to Dashboard</div>
             </a>
-            <section class="flex flex-col bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
-                <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Download & Upload Mb</h2>
-                <div id="downloads_chart" class="h-[600px] -translate-y-14"></div>
+            <section class="flex flex-col items-center justify-center bg-white p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+                <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Mb Uploaded & Downloaded</h2>
+                <div id="downloads_chart" class="h-[600px] w-full -translate-y-14"></div>
             </section>
-            <section class="flex flex-col bg-white mt-20 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <section class="flex flex-col flex-col items-center justify-center bg-white mt-10 p-2 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
                 <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Download & Upload Bandwidth</h2>
-                <div id="bandwidth_chart" class="h-[600px] -translate-y-14"></div>
+                <div id="bandwidth_chart" class="h-[600px] w-full -translate-y-14"></div>
             </section>
-            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <section class="flex flex-col flex-col items-center justify-center bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
                 <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Ping Latency Over Time</h2>
-                <div id="ping_latency_chart" class="h-[600px] -translate-y-14"></div>
+                <div id="ping_latency_chart" class="h-[600px] w-full -translate-y-14"></div>
             </section>
-            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <section class="flex flex-col flex-col items-center justify-center bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
                 <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Internet Service Provider Popularity</h2>
-                 <div id="isp_chart" class="h-[600px] -translate-y-14"></div>
+                 <div id="isp_chart" class="h-[600px] w-full -translate-y-14"></div>
             </section>
-            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <section class="flex flex-col flex-col items-center justify-center bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
                 <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">ServerName Popularity</h2>
-                <div id="server_name_chart" class="h-[600px] -translate-y-14"></div>
+                <div id="server_name_chart" class="h-[600px] w-full -translate-y-14"></div>
             </section>
-            <section class="flex flex-col bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
+            <section class="flex flex-col flex-col items-center justify-center bg-white p-2 mt-10 m-2 space-y-10 shadow-2xl rounded-3xl md:p-15">
                 <h2 class="text-center font-mono text-3xl pt-10 position:static z-10 underline decoration-4 hover:uppercase">Country Popularity</h2>
-                <div id="regions_div" class="h-[600px] -translate-y-10"></div>
+                <div id="regions_div" class="h-[600px] w-full -translate-y-10"></div>
             </section>
             <a href="/">
                 <div class="rounded-full bg-gray-500 inline-block px-4 py-2 shadow-lg hover:cursor-pointer hover:bg-gray-100 transition duration-300 ease-out hover:ease-in">Back to Dashboard</div>

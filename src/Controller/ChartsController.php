@@ -20,7 +20,7 @@ class ChartsController extends AbstractController
     #[Route('/charts', name: 'charts_index')]
     public function index(Connection $connection): Response
     {
-        $sql = "SELECT timestamp,download_bytes,upload_bytes,
+        $sql = "SELECT id,timestamp,download_bytes,upload_bytes,
                         download_bandwidth,upload_bandwidth,
                         ping_latency, ping_low, ping_high
                 FROM results";
