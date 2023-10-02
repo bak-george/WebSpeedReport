@@ -84,9 +84,9 @@
             chart.draw(data, options);
 
             google.visualization.events.addListener(chart, 'select', function() {
-                var selectedItem = chart.getSelection()[0];
+                let selectedItem = chart.getSelection()[0];
                 if (selectedItem) {
-                    var idValue = data.getValue(selectedItem.row, 3);
+                    let idValue = data.getValue(selectedItem.row, 3);
                     window.location.href = '/data/' + idValue;
                 }
             });
@@ -125,9 +125,9 @@
             chart.draw(data, options);
 
             google.visualization.events.addListener(chart, 'select', function() {
-                var selectedItem = chart.getSelection()[0];
+                let selectedItem = chart.getSelection()[0];
                 if (selectedItem) {
-                    var idValue = data.getValue(selectedItem.row, 4);  // Note the change in column index to 4 since we added the annotation
+                    let idValue = data.getValue(selectedItem.row, 4);
                     window.location.href = '/data/' + idValue;
                 }
             });
@@ -143,7 +143,7 @@
             ]);
 
             let options = {};
-            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+            let chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
             chart.draw(data, options);
         }
 
