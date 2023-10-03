@@ -5,9 +5,11 @@
     <li>Has a command that handles the database along with the created data.</li>
     <li>Gives you an overall view of your data in a dashboard.</li>
     <li>Provides an in-depth view from your internet test runs.</li>
+    <li><b>New:</b> Organises the data in Graphs.</li>
 </ul>
 <img src="public/images/demo1.png">
 <img src="public/images/demo2.png">
+<img src="public/images/demo3.jpeg">
 
 <h1>Installation</h1>
 <h2><b>1. SpeedTest</b></h2>
