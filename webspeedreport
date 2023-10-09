@@ -5,7 +5,7 @@
 use Symfony\Component\Console\Application;
 
 require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/src/speedtestCommand.php';
+require __DIR__ . '/src/SpeedtestCommand.php';
 
 echo "WebSpeedReport started.\n";
 

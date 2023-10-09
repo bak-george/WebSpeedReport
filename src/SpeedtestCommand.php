@@ -11,7 +11,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 require_once 'vendor/autoload.php';
 require_once 'bootstrap.php';
 
-class speedtestCommand extends Command
+class SpeedtestCommand extends Command
 {
     protected function configure()
     {
