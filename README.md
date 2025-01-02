@@ -1,3 +1,4 @@
+# update Jan 2, 2025: New updated version in Laravel titled [InternetSpeedReport](https://github.com/bak-george/InternetSpeedReport)
 <h1>WebSpeedReport</h1>
 <p>WebSpeedReport is an <b>open source tool</b> that provides more in depth information about your internet connection.</p>
 <ul><b>Features:</b>
